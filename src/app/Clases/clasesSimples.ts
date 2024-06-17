@@ -57,3 +57,26 @@ export class elemento{
     }
 
 }
+
+export class Tableros{
+    constructor(){
+
+    }
+
+    elementoId: string=""
+    nombreTablero: string ="";
+    descripcion: string="";
+    cantidadListas: number =0;
+    usuarioCreacion: string="";
+    usuarioUltEdicion: string="";
+    
+    setData(data:any){
+
+        this.elementoId=data.elementoId
+        this.nombreTablero=data.nombreTablero
+        this.descripcion=data.descripcion
+        this.usuarioCreacion=data.usuarioCreacion
+        this.usuarioUltEdicion=data.usuarioUltEdicion
+    }
+
+}

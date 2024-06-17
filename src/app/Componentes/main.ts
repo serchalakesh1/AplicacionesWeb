@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Firestore, collection, collectionData, query, where } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
-import { Usuario, elemento } from '../Clases/clasesSimples';
+import { Usuario, elemento, Tableros } from '../Clases/clasesSimples';
 import { doc, setDoc } from 'firebase/firestore';
 
 @Component({
@@ -17,10 +17,10 @@ import { doc, setDoc } from 'firebase/firestore';
 export class mainComponent{
 
     credencial=new Usuario();
-    nuevoElemento=new elemento();
-    listaElementos: elemento[]=new Array();
+    nuevoElemento=new Tableros();
+    listaTableros: Tableros[]=new Array();
 
-    elementosBD = collection(this.firestore, "Elementos");
+    TablerosBD = collection(this.firestore, "Tableros");
 
     constructor(private firestore:Firestore){
         //this.nombre=history.state.nom!
@@ -28,13 +28,13 @@ export class mainComponent{
 
         this.credencial=history.state;
 
-        let q = query(this.elementosBD )
-        collectionData(q).subscribe((elementoSnap)=>{
+        let q = query(this.TablerosBD )
+        collectionData(q).subscribe((Tablerosnap)=>{
 
-            elementoSnap.forEach((item)=>{
-                let element= new elemento;
+            Tablerosnap.forEach((item)=>{
+                let element= new Tableros;
                 element.setData(item)
-                this.listaElementos.push(element)
+                this.listaTableros.push(element)
             })
 
         }
@@ -46,7 +46,7 @@ export class mainComponent{
 
     abrirModalNuevoElemento(){
 
-        this.nuevoElemento=new elemento();
+        this.nuevoElemento=new Tableros();
         this.nuevoElemento.usuarioCreacion=this.credencial.Usuario;
 
 
@@ -55,13 +55,11 @@ export class mainComponent{
 
     agregarElemento(){
         this.nuevoElemento.elementoId=this.generateRandomString(15);
-        let rutaDoc=doc(this.firestore,"Elementos", this.nuevoElemento.elementoId);
+        let rutaDoc=doc(this.firestore,"Tableros", this.nuevoElemento.elementoId);
         setDoc(rutaDoc,JSON.parse(JSON.stringify(this.nuevoElemento)))
         alert("Registro exitante")
         let btncerrar=document.getElementById("btnCerrarModalElemento")
         btncerrar?.click()
-
-
     }
 
     generateRandomString = (num: number) =>{
@@ -75,6 +73,3 @@ export class mainComponent{
     }
     
 }
-
-
-
