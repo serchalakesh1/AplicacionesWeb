@@ -1,0 +1,30 @@
+<h1>Agenda de Contactos</h1>
+
+<div id="container1">
+    <label for="input1">Agregar a la lista</label>
+    <br>
+    <input type="text" [(ngModel)]="contacto.Nombre" placeholder="Nombre" id="input1">
+    <br>
+    <input type="text" [(ngModel)]="contacto.Apellidos" placeholder="Apellidos" id="input2">
+    <br>
+    <input type="text" [(ngModel)]="contacto.Telefono" placeholder="Teléfono" id="input3">
+    <br>
+    <input type="text" [(ngModel)]="contacto.Pais" placeholder="País" id="input4">
+    <br>
+    <button (click)="pushLista()" id="button1">
+        Agregar
+    </button>
+
+    <br>
+    <div *ngFor="let item of listaContactos; let i = index" [id]="'contacto' + i">
+        <h4>
+            Nombre: {{item.Nombre}} {{item.Apellidos}}
+        </h4>
+        <h5>
+            Teléfono: {{item.Telefono}}
+        </h5>
+        <h5>
+            País: {{item.Pais}}
+        </h5>
+    </div>
+</div>

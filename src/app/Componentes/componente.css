@@ -1,0 +1,43 @@
+#container1 {
+    font-family: Arial, sans-serif;
+    background-color: #ffe6f2;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#input1, #input2, #input3, #input4 {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ff99cc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#button1 {
+    background-color: #ff66b2;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#button1:hover {
+    background-color: #ff3399;
+}
+
+h4, h5 {
+    color: #ff0066;
+}
+
+[id^="contacto"] {
+    background-color: #ffffff;
+    border: 1px solid #ff99cc;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+}

@@ -1,0 +1,120 @@
+<div style="background-color: beige;" >
+    <div class="container">
+        <h3> 
+            Bienvenido al sistema perra {{credencial.Nombre}}
+        </h3>
+        <br>
+        <div class="row">
+            <div class="col-sm-9">
+
+
+            </div>
+            <div class="col-sm-3 ">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalElemento" (click)="abrirModalNuevoElemento()">
+                Nuevo Elemento
+              </button>
+             </div>
+
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">UM</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Descripcion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let elemento of listaElementos">
+              <th scope="row">{{elemento.nombreElemento}}</th>
+              <td>{{elemento.unidadMedida}}</td>
+              <td>{{elemento.cantidad}}</td>
+              <td>@{{elemento.descripcion}}</td>
+            </tr>
+         
+          </tbody>
+        </table>
+        <div>
+
+        </div>
+      </div>
+    </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalElemento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Nuevo Elemento</h1>
+                <button type="button" id="btnCerrarModalElemento" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                
+                <div class="row">
+                  <div class="col-sm-8 row">
+                    <label  class="col-sm-3">Nombre: </label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" [(ngModel)]="nuevoElemento.nombreElemento">
+                    </div>
+
+                  </div>
+
+                  <div class="clearfix" style="margin-top: 1%;"></div>
+                  <div class="col-sm-4 row">
+                    <label  class="col-sm-4">UM: </label>
+                    <div class="col-sm-8">
+                      <select class="form-control "  [(ngModel)]="nuevoElemento.unidadMedida">
+                        <option value="-">-</option>
+                        <option value="Metro">Metro</option>
+                        <option value="Kilo">Kilo</option>
+                        <option value="Litros">Litros</option>
+  
+  
+                      </select>
+
+                    </div>
+
+
+                  </div>
+                  <div class="col-sm-4 row">
+                    <label  class="col-sm-6">Cantidad: </label>
+                    <div class="col-sm-6">
+                      <input type="text" class="form-control" [(ngModel)]="nuevoElemento.cantidad">
+                    </div>
+                  </div>
+                  <div class="clearfix" style="margin-top: 1%;"></div>
+                  <div class="row">
+
+                    <label  class="col-sm-2">Descripcion: </label>
+                    <div class="col-sm-10">
+                      <textarea ows="2" class="form-control" [(ngModel)]="nuevoElemento.descripcion"></textarea>
+
+                    </div>
+                  </div>
+
+
+                </div>
+
+              </div>
+              <div class="modal-footer">
+
+                <button type="button" class="btn btn-success" (click)="agregarElemento()">Agregar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+        
+
+        
