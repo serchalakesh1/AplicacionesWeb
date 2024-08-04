@@ -9,7 +9,8 @@ import { AppComponent } from './app.component';
 import { loginComponent } from './Componentes/login';   
 import { componente } from './Componentes/componente';
 import { environment } from 'src/environments/environment';
-import { mainComponent } from './Componentes/main';   
+import { MainComponent } from './Componentes/main';
+import { tableroWorkspaceComponent } from './Componentes/tableroWorkspace';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { mainComponent } from './Componentes/main';
     AppComponent,
     componente,
     loginComponent,
-    mainComponent,
+    MainComponent,
+    tableroWorkspaceComponent,
   ],
   imports: [
     BrowserModule,

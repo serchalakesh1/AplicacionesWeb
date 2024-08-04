@@ -1,82 +1,78 @@
-export class Contacto{
-    constructor(){
+export class Contacto {
+    constructor() {
 
 
     }
 
-    Nombre: string="";
-    Apellidos: string="";
-    Telefono:string="";
-    Pais: string="";
+    Nombre: string = "";
+    Apellidos: string = "";
+    Telefono: string = "";
+    Pais: string = "";
 }
 
-export class Usuario{
+export class Usuario {
 
-    constructor(){
+    constructor() {
 
 
     }
 
-    UsuarioID="";
-    Usuario="";
-    Nombre="";
-    Contrasena="";
+    UsuarioID = "";
+    Usuario = "";
+    Nombre = "";
+    Contrasena = "";
 
-    setData(data:any){
-        this.UsuarioID=data.UsuarioID;
-        this.Usuario=data.Usuario
-        this.Nombre=data.Nombre
-        this.Contrasena=data.Contrasena
+    setData(data: any) {
+        this.UsuarioID = data.UsuarioID;
+        this.Usuario = data.Usuario
+        this.Nombre = data.Nombre
+        this.Contrasena = data.Contrasena
 
 
 
     }
 }
-export class elemento{
-    constructor(){
 
+export class Tablero {
+    Nombre: string = "";
+    Color: string = "";
+    TableroID: string = "";
+
+    constructor() {
     }
 
-    elementoId: string=""
-    nombreElemento: string ="";
-    unidadMedida: string="";
-    descripcion: string="";
-    cantidad: number =0;
-    usuarioCreacion: string="";
-    usuarioUltEdicion: string="";
-    
-    setData(data:any){
-
-        this.elementoId=data.elementoId
-        this.nombreElemento=data.nombreElemento
-        this.unidadMedida=data.unidadMedida
-        this.descripcion=data.descripcion
-        this.cantidad=data.cantidad
-        this.usuarioCreacion=data.usuarioCreacion
-        this.usuarioUltEdicion=data.usuarioUltEdicion
+    setData(data: any) {
+        this.Nombre = data.Nombre;
+        this.Color = data.Color;
+        this.TableroID = data.TableroID;
     }
-
 }
 
-export class Tableros{
-    constructor(){
 
+export class Listas {
+    Nombre: string = "";
+    ListaID: string = "";
+
+    constructor() {
     }
 
-    elementoId: string=""
-    nombreTablero: string ="";
-    descripcion: string="";
-    cantidadListas: number =0;
-    usuarioCreacion: string="";
-    usuarioUltEdicion: string="";
-    
-    setData(data:any){
+    setData(data: any) {
+        this.Nombre = data.Nombre;
+        this.ListaID = data.ListaID;
+    }
+}
 
-        this.elementoId=data.elementoId
-        this.nombreTablero=data.nombreTablero
-        this.descripcion=data.descripcion
-        this.usuarioCreacion=data.usuarioCreacion
-        this.usuarioUltEdicion=data.usuarioUltEdicion
+export class Tarjeta {
+    Nombre: string = "";
+    TarjetaID: string = "";
+    Contenido: string = "";
+
+    constructor() {
     }
 
+    setData(data: any) {
+        this.Nombre = data.Nombre;
+        this.TarjetaID = data.TarjetaID;
+        this.Contenido = data.Contenido;
+    }
 }

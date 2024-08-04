@@ -8,12 +8,12 @@
 </head>
 <body>
   <section class="form-login">
-    <h5>Formulario Login</h5>
+    <h5>Login</h5>
     <div class="grid-container">
-      <input class="controls" type="text" name="usuario" value="" placeholder="Usuario">
-      <input class="controls" type="password" name="contrasena" value="" placeholder="Contraseña">
-      <input class="buttons" type="submit" name="" value="Ingresar">
-      <p><a href="#">¿Olvidastes tu Contraseña?</a></p>
+      <input class="controls" type="text" name="usuario" id="usuario" [(ngModel)]="usuario" value="" placeholder="User">
+      <input class="controls" type="password" name="contrasena" id="contrasena" [(ngModel)]="contrasena" value="" placeholder="Password">
+      <button class="btn btn-primary w-100 py-2" type="submit" (click)="login()">Login</button>
+      <p><a href="#">Forgot password?</a></p>
     </div>
   </section>
 </body>
