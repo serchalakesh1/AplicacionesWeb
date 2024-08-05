@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Firestore, collection, collectionData, query, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, query, addDoc, getDoc, doc } from '@angular/fire/firestore';
 import { Listas, Usuario, Tarjeta, Tablero } from '../Clases/clasesSimples';
 
 @Component({
@@ -11,17 +11,20 @@ import { Listas, Usuario, Tarjeta, Tablero } from '../Clases/clasesSimples';
 })
 export class tableroWorkspaceComponent implements OnInit {
   tableroId: string | null = null;
+  tableroNombre: string | null = null;
   tableroColor: string | null = null;
   credencial = new Usuario();
   listaTableros: Listas[] = [];
   tarjetasPorLista: { [key: string]: Tarjeta[] } = {}; // Diccionario para almacenar tarjetas por lista
   isModalVisible = false;
   newListName: string = '';
+  userProfileImageUrl: string = '';
 
   constructor(private firestore: Firestore, private router: Router, private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
       this.tableroId = params['id'];
       this.tableroColor = params['color'];
+      this.tableroNombre = params['nombre'];
       console.log('Tablero ID:', this.tableroId);
       console.log('Tablero Color:', this.tableroColor);
     });
@@ -57,7 +60,9 @@ export class tableroWorkspaceComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadUserProfile();
+  }
 
   async agregarNuevaLista() {
     if (this.newListName.trim() === '') return;
@@ -79,6 +84,25 @@ export class tableroWorkspaceComponent implements OnInit {
     }
   }
 
+  async loadUserProfile() {
+    const usuarioId = localStorage.getItem('UsuarioId');
+
+    const userProfileDocRef = doc(this.firestore, `users/${usuarioId}`);
+    try {
+      const docSnapshot = await getDoc(userProfileDocRef);
+      if (docSnapshot.exists()) {
+        const userProfileData = docSnapshot.data();
+        console.log('User profile data:', userProfileData); // Verificar datos del perfil del usuario
+        this.userProfileImageUrl = userProfileData['Perfil'] || '';
+        console.log('User profile image URL:', this.userProfileImageUrl); // Verificar URL de la imagen
+      } else {
+        console.warn('No profile data found for user.');
+      }
+    } catch (error) {
+      console.error("Error al cargar el perfil del usuario:", error);
+    }
+  }
+
   generateRandomString(num: number): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -91,5 +115,14 @@ export class tableroWorkspaceComponent implements OnInit {
 
   mostrarModal() {
     this.isModalVisible = true;
+  }
+
+  logginout() {
+    localStorage.removeItem('UsuarioId');
+    this.router.navigate(['/login']);
+  }
+
+  goToMain() {
+    this.router.navigate(['/main']);
   }
 }

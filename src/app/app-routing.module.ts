@@ -5,14 +5,15 @@ import { loginComponent } from './Componentes/login';
 import { MainComponent } from './Componentes/main';
 import { tableroWorkspaceComponent } from './Componentes/tableroWorkspace';
 import { loginguard } from './guards/login.guard';
+import { loginreverseguard } from './guards/login.reverseguard';
 
 const routes: Routes = [
-  { path: 'componente', component: componente},
-  { path: 'login', component: loginComponent },
-  { path: 'main', component: MainComponent, canActivate: [loginguard]},
-  { path: 'tableros', component: tableroWorkspaceComponent, canActivate: [loginguard]},
-  { path: 'workspace', component: tableroWorkspaceComponent, canActivate: [loginguard]},
-  { path: '', component: loginComponent, canActivate: [loginguard]}
+  //{ path: 'componente', component: componente }, solo sirve para recordar como hacer un componente jajaja
+  { path: 'login', component: loginComponent, canActivate: [loginreverseguard]},
+  { path: 'main', component: MainComponent, canActivate: [loginguard] },
+  { path: 'tableros', component: tableroWorkspaceComponent, canActivate: [loginguard] },
+  { path: 'workspace', component: tableroWorkspaceComponent, canActivate: [loginguard] },
+  { path: '', component: loginComponent, canActivate: [loginreverseguard]}
 ];
 
 @NgModule({

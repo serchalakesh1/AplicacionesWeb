@@ -7,13 +7,23 @@
   <title>Login</title>
 </head>
 <body>
-  <section class="form-login">
+  <section class="form-login" *ngIf="!registerMode">
     <h5>Login</h5>
     <div class="grid-container">
-      <input class="controls" type="text" name="usuario" id="usuario" [(ngModel)]="usuario" value="" placeholder="User">
-      <input class="controls" type="password" name="contrasena" id="contrasena" [(ngModel)]="contrasena" value="" placeholder="Password">
-      <button class="btn btn-primary w-100 py-2" type="submit" (click)="login()">Login</button>
-      <p><a href="#">Forgot password?</a></p>
+      <input class="controls" type="text" name="usuario" id="usuario" [(ngModel)]="usuario" placeholder="User">
+      <input class="controls" type="password" name="contrasena" id="contrasena" [(ngModel)]="contrasena" placeholder="Password">
+      <button class="buttons" type="button" (click)="login()">Login</button>
+      <p><a href="#" (click)="toggleRegister($event)">Don't have an account? Register here</a></p>
+    </div>
+  </section>
+
+  <section class="form-register" *ngIf="registerMode">
+    <h5>Register</h5>
+    <div class="grid-container">
+      <input class="controls" type="text" name="newUsuario" id="newUsuario" [(ngModel)]="newUsuario" placeholder="User">
+      <input class="controls" type="password" name="newContrasena" id="newContrasena" [(ngModel)]="newContrasena" placeholder="Password">
+      <button class="buttons" type="button" (click)="register()">Register</button>
+      <p><a href="#" (click)="toggleRegister($event)">Already have an account? Login here</a></p>
     </div>
   </section>
 </body>
