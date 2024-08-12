@@ -37,16 +37,17 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   gap: 15px;
+  color: wheat;
 }
 
 .form-login .controls {
   width: 100%;
   border: 1px solid #017bab;
   padding: 11px 10px;
-  background: #252323;
+  background: white;
   font-size: 14px;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 
 .form-login .buttons {
@@ -71,9 +72,6 @@ body {
 .form-login a:hover {
   text-decoration: underline;
 }
-
-
-/* Añade estos estilos al final de tu archivo login.css */
 
 .form-register {
   width: 400px;
@@ -103,10 +101,10 @@ body {
   width: 100%;
   border: 1px solid #017bab;
   padding: 11px 10px;
-  background: #252323;
+  background: white;
   font-size: 14px;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 
 .form-register .buttons {

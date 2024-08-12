@@ -3,7 +3,7 @@ import { Firestore, collection, doc, setDoc, query, where, collectionData } from
 import { Router } from '@angular/router';
 import { Usuario } from '../Clases/clasesSimples';
 import { take } from 'rxjs/operators';
-
+//
 @Component({
   selector: 'login',
   templateUrl: './login.html',
@@ -13,7 +13,7 @@ import { take } from 'rxjs/operators';
 export class loginComponent {
   usuario = "";
   contrasena = "";
-  newUsuario = "";
+  newUsuario = "";  
   newContrasena = "";
   credencial = new Usuario();
   registerMode = false;

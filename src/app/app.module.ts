@@ -11,6 +11,11 @@ import { componente } from './Componentes/componente';
 import { environment } from 'src/environments/environment';
 import { MainComponent } from './Componentes/main';
 import { tableroWorkspaceComponent } from './Componentes/tableroWorkspace';
+import { perfilComponent } from './Componentes/perfil';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+
 
 
 @NgModule({
@@ -20,11 +25,15 @@ import { tableroWorkspaceComponent } from './Componentes/tableroWorkspace';
     loginComponent,
     MainComponent,
     tableroWorkspaceComponent,
+    perfilComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireStorageModule,
+    AngularFireAuthModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore())
   ],

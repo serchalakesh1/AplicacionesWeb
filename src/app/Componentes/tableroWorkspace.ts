@@ -125,4 +125,8 @@ export class tableroWorkspaceComponent implements OnInit {
   goToMain() {
     this.router.navigate(['/main']);
   }
+
+  gotoperfil() {
+    this.router.navigate(['/perfil']);
+  }
 }

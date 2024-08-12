@@ -128,4 +128,10 @@ export class MainComponent implements OnInit {
     localStorage.removeItem('UsuarioId');
     this.router.navigate(['/login']);
   }
+
+
+  gotoperfil() {
+    this.router.navigate(['/perfil']);
+  }
+  
 }

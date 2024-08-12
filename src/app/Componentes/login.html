@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!---->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="login.css">
   <title>Login</title>
+  <style>
+    body, h5, p, a, input, button {
+      color: black;
+    }
+    input.controls:focus, input.controls:hover {
+      outline: none;
+      box-shadow: none;
+    }
+  </style>
 </head>
 <body>
   <section class="form-login" *ngIf="!registerMode">
@@ -23,7 +33,7 @@
       <input class="controls" type="text" name="newUsuario" id="newUsuario" [(ngModel)]="newUsuario" placeholder="User">
       <input class="controls" type="password" name="newContrasena" id="newContrasena" [(ngModel)]="newContrasena" placeholder="Password">
       <button class="buttons" type="button" (click)="register()">Register</button>
-      <p><a href="#" (click)="toggleRegister($event)">Already have an account? Login here</a></p>
+      <p><a href="#" (click)="toggleRegister($event)">Already have an account? <a href="/">Login here</a></a></p>
     </div>
   </section>
 </body>

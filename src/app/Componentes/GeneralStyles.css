@@ -6563,7 +6563,6 @@ only screen and (min-width:901px) and (max-width:1280px) {
   margin: 40px 0 0;
   max-height: 90vh;
   padding: 0 16px;
-  position: sticky;
   top: 40px;
   width: 256px
 }
@@ -6796,7 +6795,7 @@ only screen and (max-width:1420px) {
   flex-direction: column;
   height: 100%;
   margin-right: 0;
-  position: relative
+  position: relative;
 }
 
 .board-header {
@@ -22250,7 +22249,7 @@ input[type=text]::-ms-clear {
 
   #chrome-container,
   #surface {
-      height: auto !important
+      height: 100% !important
   }
 
   #trello-root,
@@ -22281,7 +22280,7 @@ input[type=text]::-ms-clear {
   }
 
   .board-main-content {
-      display: block !important;
+      display: block;
       margin-right: 0
   }
 
