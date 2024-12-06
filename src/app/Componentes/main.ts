@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { Firestore, doc, getDoc, collection, query, collectionData } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, collection, query, collectionData, serverTimestamp } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { Usuario, Tablero } from '../Clases/clasesSimples';
-import { setDoc } from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { setDoc, orderBy, deleteDoc } from 'firebase/firestore';
+
 
 @Component({
   selector: 'app-main',
@@ -16,6 +16,8 @@ export class MainComponent implements OnInit {
   credencial = new Usuario();
   nuevoElemento = new Tablero();
   listaTableros: Tablero[] = [];
+  listaTablerostime: Tablero[] = [];
+  listaTablerosRecent: Tablero[] = [];
   selectedColor: any = null;
   userProfileImageUrl: string = '';
 
@@ -24,6 +26,8 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     this.loadUserProfile();
     this.loadUserBoards();
+    this.loadUserBoardstime();
+    this.loadUserBoardsRecent();
   }
 
   async loadUserProfile() {
@@ -45,12 +49,14 @@ export class MainComponent implements OnInit {
     }
   }
 
+  
   async loadUserBoards() {
     const usuarioId = localStorage.getItem('UsuarioId');
-
     const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
     this.credencial = history.state;
-    const q = query(TablerosBD);
+
+    const q = query(TablerosBD, orderBy('Nombre', 'asc')); // Order by 'Nombre' in ascending order
+
     try {
       collectionData(q).subscribe((Tablerosnap) => {
         this.listaTableros = []; // Reinicia la lista para evitar duplicados
@@ -64,7 +70,53 @@ export class MainComponent implements OnInit {
     } catch (error) {
       console.error("Error al cargar los tableros del usuario:", error);
     }
+}
+
+
+async loadUserBoardstime() {
+  const usuarioId = localStorage.getItem('UsuarioId');
+  const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
+  this.credencial = history.state;
+
+  const q = query(TablerosBD, orderBy('Timestamp', 'desc')); // Order by 'Timestamp' in descending order
+
+  try {
+    collectionData(q).subscribe((Tablerosnap) => {
+      this.listaTablerostime = []; // Reset the list to avoid duplicates
+      Tablerosnap.forEach((item) => {
+        let element = new Tablero();
+        element.setData(item);
+        this.listaTablerostime.push(element);
+      });
+      console.log('Boards loaded:', this.listaTableros); // Verify that the boards are loaded
+    });
+  } catch (error) {
+    console.error("Error al cargar los tableros del usuario:", error);
   }
+}
+
+async loadUserBoardsRecent() {
+  const usuarioId = localStorage.getItem('UsuarioId');
+  const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
+  this.credencial = history.state;
+
+  const q = query(TablerosBD, orderBy('recentOpen', 'desc')); // Order by 'Timestamp' in descending order
+
+  try {
+    collectionData(q).subscribe((Tablerosnap) => {
+      this.listaTablerosRecent = []; // Reset the list to avoid duplicates
+      Tablerosnap.forEach((item) => {
+        let element = new Tablero();
+        element.setData(item);
+        this.listaTablerosRecent.push(element);
+      });
+      console.log('Boards loaded:', this.listaTableros); // Verify that the boards are loaded
+    });
+  } catch (error) {
+    console.error("Error al cargar los tableros del usuario:", error);
+  }
+}
+
 
   colors = [
     { backgroundColor: '34, 140, 213', backgroundImage: 'url(/assets/707f35bc691220846678.svg)' },
@@ -90,6 +142,8 @@ export class MainComponent implements OnInit {
     }
 
     this.nuevoElemento.TableroID = this.generateRandomString(15);
+    this.nuevoElemento.Timestamp = serverTimestamp(); // Set the server timestamp
+
     const usuarioId = localStorage.getItem('UsuarioId');
     if (!usuarioId) {
       console.error("No user ID found in localStorage.");
@@ -108,7 +162,7 @@ export class MainComponent implements OnInit {
     }).catch((error) => {
       console.error("Error al crear el tablero:", error);
     });
-  }
+}
 
   generateRandomString(num: number): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -121,8 +175,28 @@ export class MainComponent implements OnInit {
   }
 
   navigateToWorkspace(tableroId: string, color: string, nombre: string) {
-    this.router.navigate(['/workspace'], { queryParams: { id: tableroId, color: color, nombre: nombre } });
-  }
+    const usuarioId = localStorage.getItem('UsuarioId');
+    if (!usuarioId) {
+      console.error("No user ID found in localStorage.");
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const userDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const tableroDocRef = doc(userDocRef, 'Tableros', tableroId);
+
+    // Update the recentOpen field with the current server timestamp
+    const recentOpenUpdate = {
+        recentOpen: serverTimestamp()
+    };
+
+    setDoc(tableroDocRef, recentOpenUpdate, { merge: true }).then(() => {
+        console.log('Recent open time updated successfully');
+        this.router.navigate(['/workspace'], { queryParams: { id: tableroId, color: color, nombre: nombre } });
+    }).catch((error) => {
+        console.error("Error updating recent open time:", error);
+    });
+}
 
   logginout() {
     localStorage.removeItem('UsuarioId');
@@ -133,5 +207,25 @@ export class MainComponent implements OnInit {
   gotoperfil() {
     this.router.navigate(['/perfil']);
   }
+
+  services() {
+    this.router.navigate(['/customer_service']);
+  }
   
+  DeletedBoard(boardID: string) {
+    const usuarioId = localStorage.getItem('UsuarioId');
+
+    // Usamos la función collection para obtener la referencia a la colección de tableros
+    const tableroCollectionRef = collection(this.firestore, `users/${usuarioId}/Tableros`);
+    // Usamos la función doc para obtener la referencia al documento específico del tablero
+    const tableroDocRef = doc(tableroCollectionRef, boardID);
+    
+    // Eliminamos el documento
+    deleteDoc(tableroDocRef).then(() => {
+      console.log(`Tablero con ID ${boardID} ha sido eliminado.`);
+      // Aquí puedes añadir cualquier acción que quieras realizar después de eliminar el tablero
+    }).catch(error => {
+      console.error("Error al eliminar el tablero: ", error);
+    });
+  }
 }

@@ -3,7 +3,7 @@ import { Firestore, collection, doc, setDoc, query, where, collectionData } from
 import { Router } from '@angular/router';
 import { Usuario } from '../Clases/clasesSimples';
 import { take } from 'rxjs/operators';
-//
+
 @Component({
   selector: 'login',
   templateUrl: './login.html',
@@ -60,6 +60,12 @@ export class loginComponent {
       return;
     }
 
+    const usernameRegex = /^[a-zA-Z0-9]+$/; // Solo permite letras y números, sin espacios ni símbolos
+    if (!usernameRegex.test(this.newUsuario)) {
+      alert("El nombre de usuario solo puede contener letras y números, sin espacios ni símbolos.");
+      return;
+    }
+
     console.log('Registrando usuario:', this.newUsuario);
     const q = query(this.UsuariosColeccion, where("Usuario", "==", this.newUsuario));
     collectionData(q).pipe(take(1)).subscribe((UsuarioSnap: any) => {
@@ -68,7 +74,7 @@ export class loginComponent {
         const newUser = new Usuario();
         newUser.UsuarioID = newUserId;
         newUser.Usuario = this.newUsuario;
-        newUser.Nombre = this.newUsuario;
+        newUser.Nombre = ""; // Deja el nombre en blanco para que el usuario lo configure después
         newUser.Contrasena = this.newContrasena;
 
         // Crear una referencia al documento del usuario con el ID generado

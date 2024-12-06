@@ -12,6 +12,7 @@ import { environment } from 'src/environments/environment';
 import { MainComponent } from './Componentes/main';
 import { tableroWorkspaceComponent } from './Componentes/tableroWorkspace';
 import { perfilComponent } from './Componentes/perfil';
+import { customer_serviceComponent } from './Componentes/customer_service';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -26,6 +27,7 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
     MainComponent,
     tableroWorkspaceComponent,
     perfilComponent,
+    customer_serviceComponent,
   ],
   imports: [
     BrowserModule,

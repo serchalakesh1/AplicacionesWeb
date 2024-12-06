@@ -38,16 +38,21 @@ export class Tablero {
     Nombre: string = "";
     Color: string = "";
     TableroID: string = "";
+    Timestamp: any = null; // Firebase Timestamp
+    recentOpen: any = null; // To track the last time the board was opened
 
-    constructor() {
-    }
+    constructor() {}
 
     setData(data: any) {
         this.Nombre = data.Nombre;
         this.Color = data.Color;
         this.TableroID = data.TableroID;
+        this.Timestamp = data.Timestamp;
+        this.recentOpen = data.recentOpen;
     }
 }
+
+
 
 
 export class Listas {

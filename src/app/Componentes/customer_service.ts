@@ -8,11 +8,11 @@ import { collection, collectionData, query, addDoc, serverTimestamp, orderBy, do
 
 @Component({
   selector: 'app-main',
-  templateUrl: './perfil.html',
+  templateUrl: './customer_service.html',
   styleUrls: ['./GeneralStyles.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class perfilComponent implements OnInit {
+export class customer_serviceComponent implements OnInit {
   userProfileImageUrl: string = '';
   name: string = '';
   username: string = '';

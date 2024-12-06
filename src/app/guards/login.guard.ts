@@ -12,8 +12,8 @@ export class loginguard implements CanActivate {
     if (localStorage.getItem('UsuarioId')) {
       return true;
     } else {
-      alert("No estás logueado");
-      this.router.navigate(['/login']);
+      alert("necesitas iniciar sesion");
+      this.router.navigate(['/']);
       return false;
     }
   }

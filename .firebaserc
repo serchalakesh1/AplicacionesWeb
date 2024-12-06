@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "serchalakeshh"
-  }
+    "default": "serchalakeshh",
+    "coso": "serchalakeshh"
+  },
+  "targets": {}
 }
