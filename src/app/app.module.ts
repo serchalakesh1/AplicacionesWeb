@@ -18,6 +18,11 @@ import { tableroWorkspaceComponent } from './Componentes/tableroWorkspace';
 import { perfilComponent } from './Componentes/perfil';
 import { customer_serviceComponent } from './Componentes/customer_service';
 
+
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+
 // Entorno
 import { environment } from 'src/environments/environment';
 
@@ -35,6 +40,9 @@ import { environment } from 'src/environments/environment';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireStorageModule,
+    AngularFireAuthModule,
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
