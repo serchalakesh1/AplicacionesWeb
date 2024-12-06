@@ -11,13 +11,13 @@ import { customer_serviceComponent } from './Componentes/customer_service';
 
 const routes: Routes = [
   //{ path: 'componente', component: componente }, solo sirve para recordar como hacer un componente jajaja
-  { path: 'login', component: loginComponent, canActivate: [loginreverseguard]},
+  { path: 'login', component: loginComponent},
   { path: 'main', component: MainComponent, canActivate: [loginguard] },
   { path: 'tableros', component: tableroWorkspaceComponent, canActivate: [loginguard] },
   { path: 'workspace', component: tableroWorkspaceComponent, canActivate: [loginguard] },
   { path: 'perfil', component: perfilComponent, canActivate: [loginguard] },
   { path: 'customer_service', component: customer_serviceComponent, canActivate: [loginguard] },
-  { path: '', component: loginComponent, canActivate: [loginreverseguard]}
+  { path: '', component: loginComponent}
 ];
 
 @NgModule({
