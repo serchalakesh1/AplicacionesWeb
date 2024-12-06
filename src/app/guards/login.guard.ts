@@ -14,13 +14,14 @@ export class loginguard implements CanActivate {
       onAuthStateChanged(this.auth, (user) => {
         if (user) {
           const storedUsuarioId = localStorage.getItem('UsuarioId'); // Obtener el UsuarioId del localStorage
-          if (storedUsuarioId === user.uid) {
+          resolve(true); // Coinciden, permitir acceso
+          /*if (storedUsuarioId === user.uid) {
             resolve(true); // Coinciden, permitir acceso
           } else {
             alert("Hubo un problema con tu sesión. Por favor, inicia sesión nuevamente.");
             this.cerrarSesion(); // Cierra la sesión si no coincide
             resolve(false);
-          }
+          }*/
         } else {
           alert("Necesitas iniciar sesión.");
           this.router.navigate(['/']); // Redirige a la página de login
@@ -30,6 +31,7 @@ export class loginguard implements CanActivate {
     });
   }
 
+  /*
   cerrarSesion() {
     signOut(this.auth)
       .then(() => {
@@ -41,4 +43,5 @@ export class loginguard implements CanActivate {
         alert("Hubo un problema al cerrar tu sesión.");
       });
   }
+  */
 }

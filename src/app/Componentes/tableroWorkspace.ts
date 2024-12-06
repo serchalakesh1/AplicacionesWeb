@@ -206,6 +206,7 @@ async agregarNuevaLista() {
     this.router.navigate(['/login']);
   }
 
+  
   goToMain() {
     this.router.navigate(['/main']);
   }

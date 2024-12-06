@@ -3,7 +3,7 @@ import { Firestore, doc, getDoc, collection, query, collectionData, serverTimest
 import { Router } from '@angular/router';
 import { Usuario, Tablero } from '../Clases/clasesSimples';
 import { setDoc, orderBy, deleteDoc } from 'firebase/firestore';
-
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-main',
@@ -21,7 +21,7 @@ export class MainComponent implements OnInit {
   selectedColor: any = null;
   userProfileImageUrl: string = '';
 
-  constructor(private firestore: Firestore, private router: Router) {}
+  constructor(private firestore: Firestore, private router: Router, private auth: Auth) {}
 
   ngOnInit() {
     this.loadUserProfile();
@@ -31,16 +31,20 @@ export class MainComponent implements OnInit {
   }
 
   async loadUserProfile() {
-    const usuarioId = localStorage.getItem('UsuarioId');
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
 
-    const userProfileDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const userProfileDocRef = doc(this.firestore, `users/${uid}`);
     try {
       const docSnapshot = await getDoc(userProfileDocRef);
       if (docSnapshot.exists()) {
         const userProfileData = docSnapshot.data();
-        console.log('User profile data:', userProfileData); // Verificar datos del perfil del usuario
+        console.log('User profile data:', userProfileData);
         this.userProfileImageUrl = userProfileData['Perfil'] || '';
-        console.log('User profile image URL:', this.userProfileImageUrl); // Verificar URL de la imagen
+        console.log('User profile image URL:', this.userProfileImageUrl);
       } else {
         console.warn('No profile data found for user.');
       }
@@ -49,82 +53,86 @@ export class MainComponent implements OnInit {
     }
   }
 
-  
   async loadUserBoards() {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const TablerosBD = collection(this.firestore, `users/${uid}/Tableros`);
     this.credencial = history.state;
 
-    const q = query(TablerosBD, orderBy('Nombre', 'asc')); // Order by 'Nombre' in ascending order
+    const q = query(TablerosBD, orderBy('Nombre', 'asc'));
 
     try {
       collectionData(q).subscribe((Tablerosnap) => {
-        this.listaTableros = []; // Reinicia la lista para evitar duplicados
+        this.listaTableros = [];
         Tablerosnap.forEach((item) => {
           let element = new Tablero();
           element.setData(item);
           this.listaTableros.push(element);
         });
-        console.log('Boards loaded:', this.listaTableros); // Verificar que se cargaron los tableros
+        console.log('Boards loaded:', this.listaTableros);
       });
     } catch (error) {
       console.error("Error al cargar los tableros del usuario:", error);
     }
-}
-
-
-async loadUserBoardstime() {
-  const usuarioId = localStorage.getItem('UsuarioId');
-  const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
-  this.credencial = history.state;
-
-  const q = query(TablerosBD, orderBy('Timestamp', 'desc')); // Order by 'Timestamp' in descending order
-
-  try {
-    collectionData(q).subscribe((Tablerosnap) => {
-      this.listaTablerostime = []; // Reset the list to avoid duplicates
-      Tablerosnap.forEach((item) => {
-        let element = new Tablero();
-        element.setData(item);
-        this.listaTablerostime.push(element);
-      });
-      console.log('Boards loaded:', this.listaTableros); // Verify that the boards are loaded
-    });
-  } catch (error) {
-    console.error("Error al cargar los tableros del usuario:", error);
   }
-}
 
-async loadUserBoardsRecent() {
-  const usuarioId = localStorage.getItem('UsuarioId');
-  const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
-  this.credencial = history.state;
+  async loadUserBoardstime() {
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
 
-  const q = query(TablerosBD, orderBy('recentOpen', 'desc')); // Order by 'Timestamp' in descending order
+    const TablerosBD = collection(this.firestore, `users/${uid}/Tableros`);
+    this.credencial = history.state;
 
-  try {
-    collectionData(q).subscribe((Tablerosnap) => {
-      this.listaTablerosRecent = []; // Reset the list to avoid duplicates
-      Tablerosnap.forEach((item) => {
-        let element = new Tablero();
-        element.setData(item);
-        this.listaTablerosRecent.push(element);
+    const q = query(TablerosBD, orderBy('Timestamp', 'desc'));
+
+    try {
+      collectionData(q).subscribe((Tablerosnap) => {
+        this.listaTablerostime = [];
+        Tablerosnap.forEach((item) => {
+          let element = new Tablero();
+          element.setData(item);
+          this.listaTablerostime.push(element);
+        });
+        console.log('Boards loaded:', this.listaTableros);
       });
-      console.log('Boards loaded:', this.listaTableros); // Verify that the boards are loaded
-    });
-  } catch (error) {
-    console.error("Error al cargar los tableros del usuario:", error);
+    } catch (error) {
+      console.error("Error al cargar los tableros del usuario:", error);
+    }
   }
-}
 
+  async loadUserBoardsRecent() {
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
 
-  colors = [
-    { backgroundColor: '34, 140, 213', backgroundImage: 'url(/assets/707f35bc691220846678.svg)' },
-    { backgroundColor: '11, 80, 175', backgroundImage: 'url(/assets/d106776cb297f000b1f4.svg)' },
-    { backgroundColor: '103, 66, 132', backgroundImage: 'url(/assets/8ab3b35f3a786bb6cdac.svg)' },
-    { backgroundColor: '168, 105, 193', backgroundImage: 'url(/assets/a7c521b94eb153008f2d.svg)' },
-    { backgroundColor: '239, 118, 58', backgroundImage: 'url(/assets/aec98becb6d15a5fc95e.svg)' }
-  ];
+    const TablerosBD = collection(this.firestore, `users/${uid}/Tableros`);
+    this.credencial = history.state;
+
+    const q = query(TablerosBD, orderBy('recentOpen', 'desc'));
+
+    try {
+      collectionData(q).subscribe((Tablerosnap) => {
+        this.listaTablerosRecent = [];
+        Tablerosnap.forEach((item) => {
+          let element = new Tablero();
+          element.setData(item);
+          this.listaTablerosRecent.push(element);
+        });
+        console.log('Boards loaded:', this.listaTableros);
+      });
+    } catch (error) {
+      console.error("Error al cargar los tableros del usuario:", error);
+    }
+  }
 
   onBoardTitleInput() {
     console.log('Título ingresado: ' + this.nuevoElemento.Nombre);
@@ -132,7 +140,7 @@ async loadUserBoardsRecent() {
 
   selectColor(color: any) {
     this.selectedColor = color;
-    this.nuevoElemento.Color = color.backgroundColor; // Asigna el color seleccionado al nuevo elemento
+    this.nuevoElemento.Color = color.backgroundColor;
   }
 
   createBoard() {
@@ -142,16 +150,16 @@ async loadUserBoardsRecent() {
     }
 
     this.nuevoElemento.TableroID = this.generateRandomString(15);
-    this.nuevoElemento.Timestamp = serverTimestamp(); // Set the server timestamp
+    this.nuevoElemento.Timestamp = serverTimestamp();
 
-    const usuarioId = localStorage.getItem('UsuarioId');
-    if (!usuarioId) {
-      console.error("No user ID found in localStorage.");
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
       this.router.navigate(['/login']);
       return;
     }
 
-    const userDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const userDocRef = doc(this.firestore, `users/${uid}`);
     const tableroDocRef = doc(userDocRef, 'Tableros', this.nuevoElemento.TableroID);
 
     setDoc(tableroDocRef, JSON.parse(JSON.stringify(this.nuevoElemento))).then(() => {
@@ -162,7 +170,7 @@ async loadUserBoardsRecent() {
     }).catch((error) => {
       console.error("Error al crear el tablero:", error);
     });
-}
+  }
 
   generateRandomString(num: number): string {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -175,34 +183,34 @@ async loadUserBoardsRecent() {
   }
 
   navigateToWorkspace(tableroId: string, color: string, nombre: string) {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    if (!usuarioId) {
-      console.error("No user ID found in localStorage.");
-      this.router.navigate(['/login']);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
       return;
     }
 
-    const userDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const userDocRef = doc(this.firestore, `users/${uid}`);
     const tableroDocRef = doc(userDocRef, 'Tableros', tableroId);
 
-    // Update the recentOpen field with the current server timestamp
     const recentOpenUpdate = {
-        recentOpen: serverTimestamp()
+      recentOpen: serverTimestamp()
     };
 
     setDoc(tableroDocRef, recentOpenUpdate, { merge: true }).then(() => {
-        console.log('Recent open time updated successfully');
-        this.router.navigate(['/workspace'], { queryParams: { id: tableroId, color: color, nombre: nombre } });
+      console.log('Recent open time updated successfully');
+      this.router.navigate(['/workspace'], { queryParams: { id: tableroId, color: color, nombre: nombre } });
     }).catch((error) => {
-        console.error("Error updating recent open time:", error);
+      console.error("Error updating recent open time:", error);
     });
-}
-
-  logginout() {
-    localStorage.removeItem('UsuarioId');
-    this.router.navigate(['/login']);
   }
 
+  logginout() {
+    this.auth.signOut().then(() => {
+      this.router.navigate(['/login']);
+    }).catch((error) => {
+      console.error("Error during logout:", error);
+    });
+  }
 
   gotoperfil() {
     this.router.navigate(['/perfil']);
@@ -211,21 +219,29 @@ async loadUserBoardsRecent() {
   services() {
     this.router.navigate(['/customer_service']);
   }
-  
-  DeletedBoard(boardID: string) {
-    const usuarioId = localStorage.getItem('UsuarioId');
 
-    // Usamos la función collection para obtener la referencia a la colección de tableros
-    const tableroCollectionRef = collection(this.firestore, `users/${usuarioId}/Tableros`);
-    // Usamos la función doc para obtener la referencia al documento específico del tablero
-    const tableroDocRef = doc(tableroCollectionRef, boardID);
-    
-    // Eliminamos el documento
+  DeletedBoard(boardID: string) {
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const tableroDocRef = doc(this.firestore, `users/${uid}/Tableros`, boardID);
+
     deleteDoc(tableroDocRef).then(() => {
       console.log(`Tablero con ID ${boardID} ha sido eliminado.`);
-      // Aquí puedes añadir cualquier acción que quieras realizar después de eliminar el tablero
-    }).catch(error => {
-      console.error("Error al eliminar el tablero: ", error);
+    }).catch((error) => {
+      console.error("Error al eliminar el tablero:", error);
     });
   }
+
+  colors = [
+    { backgroundColor: '34, 140, 213', backgroundImage: 'url(/assets/707f35bc691220846678.svg)' },
+    { backgroundColor: '11, 80, 175', backgroundImage: 'url(/assets/d106776cb297f000b1f4.svg)' },
+    { backgroundColor: '103, 66, 132', backgroundImage: 'url(/assets/8ab3b35f3a786bb6cdac.svg)' },
+    { backgroundColor: '168, 105, 193', backgroundImage: 'url(/assets/a7c521b94eb153008f2d.svg)' },
+    { backgroundColor: '239, 118, 58', backgroundImage: 'url(/assets/aec98becb6d15a5fc95e.svg)' }
+  ];
+  
 }

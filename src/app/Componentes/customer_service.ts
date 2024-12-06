@@ -216,6 +216,7 @@ export class customer_serviceComponent implements OnInit {
       alert('Error al actualizar la contraseña.');
     }
   }
+  
 
   logginout() {
     localStorage.removeItem('UsuarioId');

@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { Listas, Tablero, Usuario } from '../Clases/clasesSimples';
-import { collection, collectionData, query, addDoc, serverTimestamp, orderBy, docData} from '@angular/fire/firestore';
+import { collection, collectionData, query, addDoc, serverTimestamp, orderBy } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-main',
@@ -27,7 +28,8 @@ export class perfilComponent implements OnInit {
   constructor(
     private firestore: Firestore,
     private storage: AngularFireStorage,
-    private router: Router
+    private router: Router,
+    private auth: Auth
   ) {}
 
   ngOnInit() {
@@ -40,31 +42,38 @@ export class perfilComponent implements OnInit {
       this.loadUserBoardstime();
       this.loadUserBoardsRecent();
     }
-  }  
-
+  }
 
   navigateToWorkspace(tableroId: string, color: string, nombre: string) {
-    const usuarioId = localStorage.getItem('UsuarioId');
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
 
-    const userDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const userDocRef = doc(this.firestore, `users/${uid}`);
     const tableroDocRef = doc(userDocRef, 'Tableros', tableroId);
 
-    // Update the recentOpen field with the current server timestamp
     const recentOpenUpdate = {
-        recentOpen: serverTimestamp()
+      recentOpen: serverTimestamp()
     };
 
     setDoc(tableroDocRef, recentOpenUpdate, { merge: true }).then(() => {
-        console.log('Recent open time updated successfully');
-        this.router.navigate(['/workspace'], { queryParams: { id: tableroId, color: color, nombre: nombre } });
+      console.log('Recent open time updated successfully');
+      this.router.navigate(['/workspace'], { queryParams: { id: tableroId, color, nombre } });
     }).catch((error) => {
-        console.error("Error updating recent open time:", error);
+      console.error("Error updating recent open time:", error);
     });
-}
+  }
 
   async loadUserProfile() {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const userProfileDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const userProfileDocRef = doc(this.firestore, `users/${uid}`);
     try {
       const docSnapshot = await getDoc(userProfileDocRef);
       if (docSnapshot.exists()) {
@@ -82,21 +91,26 @@ export class perfilComponent implements OnInit {
   }
 
   async loadUserBoardstime() {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const TablerosBD = collection(this.firestore, `users/${uid}/Tableros`);
     this.credencial = history.state;
-  
-    const q = query(TablerosBD, orderBy('Timestamp', 'desc')); // Order by 'Timestamp' in descending order
-  
+
+    const q = query(TablerosBD, orderBy('Timestamp', 'desc'));
+
     try {
       collectionData(q).subscribe((Tablerosnap) => {
-        this.listaTablerostime = []; // Reset the list to avoid duplicates
+        this.listaTablerostime = [];
         Tablerosnap.forEach((item) => {
           let element = new Tablero();
           element.setData(item);
           this.listaTablerostime.push(element);
         });
-        console.log('Boards loaded:', this.listaTableros); // Verify that the boards are loaded
+        console.log('Boards loaded:', this.listaTableros);
       });
     } catch (error) {
       console.error("Error al cargar los tableros del usuario:", error);
@@ -104,21 +118,26 @@ export class perfilComponent implements OnInit {
   }
 
   async loadUserBoardsRecent() {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const TablerosBD = collection(this.firestore, `users/${usuarioId}/Tableros`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const TablerosBD = collection(this.firestore, `users/${uid}/Tableros`);
     this.credencial = history.state;
-  
-    const q = query(TablerosBD, orderBy('recentOpen', 'desc')); // Order by 'Timestamp' in descending order
-  
+
+    const q = query(TablerosBD, orderBy('recentOpen', 'desc'));
+
     try {
       collectionData(q).subscribe((Tablerosnap) => {
-        this.listaTablerosRecent = []; // Reset the list to avoid duplicates
+        this.listaTablerosRecent = [];
         Tablerosnap.forEach((item) => {
           let element = new Tablero();
           element.setData(item);
           this.listaTablerosRecent.push(element);
         });
-        console.log('Boards loaded:', this.listaTableros); // Verify that the boards are loaded
+        console.log('Boards loaded:', this.listaTableros);
       });
     } catch (error) {
       console.error("Error al cargar los tableros del usuario:", error);
@@ -138,8 +157,13 @@ export class perfilComponent implements OnInit {
   }
 
   uploadImage(file: File) {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const filePath = `images/${usuarioId}`; // El nombre del archivo será el UsuarioId
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const filePath = `images/${uid}`;
     const fileRef = this.storage.ref(filePath);
     const task = this.storage.upload(filePath, file);
 
@@ -154,8 +178,13 @@ export class perfilComponent implements OnInit {
   }
 
   async updateUserProfileImageUrl(url: string) {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const userProfileDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const userProfileDocRef = doc(this.firestore, `users/${uid}`);
     try {
       await setDoc(userProfileDocRef, { Perfil: url }, { merge: true });
       console.log("Profile image URL updated successfully");
@@ -165,21 +194,25 @@ export class perfilComponent implements OnInit {
   }
 
   async saveProfile() {
-    const nameRegex = /^[a-zA-Z\s]+$/; // Solo permite letras y espacios
+    const nameRegex = /^[a-zA-Z\s]+$/;
     if (!nameRegex.test(this.name)) {
       alert('El nombre solo puede contener letras y espacios.');
       return;
     }
 
-    const usernameRegex = /^[a-zA-Z0-9]+$/; // Solo permite letras y números, sin espacios
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
     if (!usernameRegex.test(this.username)) {
       alert('El nombre de usuario solo puede contener letras y números, sin espacios.');
       return;
     }
 
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const userProfileDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
 
+    const userProfileDocRef = doc(this.firestore, `users/${uid}`);
     try {
       await setDoc(userProfileDocRef, {
         Nombre: this.name,
@@ -194,8 +227,13 @@ export class perfilComponent implements OnInit {
   }
 
   async savePassword() {
-    const usuarioId = localStorage.getItem('UsuarioId');
-    const userProfileDocRef = doc(this.firestore, `users/${usuarioId}`);
+    const uid = this.auth.currentUser?.uid;
+    if (!uid) {
+      console.error("No UID found for authenticated user.");
+      return;
+    }
+
+    const userProfileDocRef = doc(this.firestore, `users/${uid}`);
 
     try {
       const docSnapshot = await getDoc(userProfileDocRef);
@@ -218,8 +256,11 @@ export class perfilComponent implements OnInit {
   }
 
   logginout() {
-    localStorage.removeItem('UsuarioId');
-    this.router.navigate(['/login']);
+    this.auth.signOut().then(() => {
+      this.router.navigate(['/login']);
+    }).catch((error) => {
+      console.error("Error during logout:", error);
+    });
   }
 
   perfil() {
